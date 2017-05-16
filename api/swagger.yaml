@@ -1,0 +1,149 @@
+---
+swagger: "2.0"
+info:
+  description: "Microservice to aid converting HTML content directly to PDF files."
+  version: "1.0.0"
+  title: "HTML to PDF Microservice"
+tags:
+- name: "Status"
+  description: "Status Related Endpoints"
+- name: "Creation"
+  description: "Creation Related Endpoints"
+schemes:
+- "http"
+paths:
+  /status:
+    get:
+      tags:
+      - "Status"
+      summary: "current API status"
+      description: "Checks that the API is currently working correctly"
+      operationId: "statusGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "API is working correctly"
+          schema:
+            $ref: "#/definitions/ApiStatus"
+      x-swagger-router-controller: "Status"
+  /convert:
+    post:
+      tags:
+      - "Creation"
+      summary: "creates a document"
+      description: "Converts a given HTML string into a PDF document"
+      operationId: "convertPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/pdf"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Options for the document that is being created"
+        required: false
+        schema:
+          $ref: "#/definitions/Document"
+      responses:
+        200:
+          description: "A pdf file which can be downloaded"
+          headers:
+            Content-type:
+              type: "string"
+              description: "application/pdf"
+            Content-disposition:
+              type: "string"
+              description: "attachment; filename=myFile.pdf"
+        400:
+          description: "Invalid input, object invalid"
+          schema:
+            $ref: "#/definitions/Error400"
+        401:
+          description: "API key not provided"
+          schema:
+            $ref: "#/definitions/Error401"
+        403:
+          description: "API key provided but is not valid"
+          schema:
+            $ref: "#/definitions/Error403"
+      security:
+      - ApiKeyHeaderParam: []
+      x-swagger-router-controller: "Creation"
+securityDefinitions:
+  ApiKeyHeaderParam:
+    description: "API Key"
+    type: "apiKey"
+    name: "apiKey"
+    in: "header"
+definitions:
+  Document:
+    type: "object"
+    required:
+    - "filename"
+    - "html"
+    properties:
+      html:
+        type: "string"
+        example: "<div><h1>This is a document</h1><p>Content Goes Here!</p></div>"
+      filename:
+        type: "string"
+        example: "myFile.pdf"
+      format:
+        type: "string"
+        example: "A5"
+        enum:
+        - "A3"
+        - "A4"
+        - "A5"
+        - "Legal"
+        - "Letter"
+        - "Tabloid"
+        default: "A4"
+      orientation:
+        type: "string"
+        example: "landscape"
+        enum:
+        - "portrait"
+        - "landscape"
+        default: "portrait"
+  ApiStatus:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        example: true
+      message:
+        type: "string"
+        example: "API is working correctly"
+  Error400:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "Details of why the request failed"
+  Error401:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "API key not provided"
+  Error403:
+    type: "object"
+    properties:
+      success:
+        type: "boolean"
+        example: false
+      message:
+        type: "string"
+        example: "API key provided but is not valid"

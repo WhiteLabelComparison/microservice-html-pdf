@@ -1,0 +1,22 @@
+{
+  "name": "html-to-pdf-microservice",
+  "version": "1.0.0",
+  "description": "Microservice to aid converting HTML content directly to PDF files.",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Apache-2.0",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "phantom": "^4.0.3",
+    "html-pdf": "^2.1.0",
+    "js-yaml": "^3.3.0",
+    "swagger-tools": "0.10.1"
+  }
+}

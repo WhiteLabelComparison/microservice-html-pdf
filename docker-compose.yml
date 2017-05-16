@@ -1,0 +1,8 @@
+version: "3"
+services:
+  microservice-html-pdf:
+    container_name: microservice-html-pdf
+    build:
+      context: .
+    ports:
+      - 8547:8547
